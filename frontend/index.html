@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EdQuest | Gamified Learning</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white h-screen flex items-center justify-center font-sans">
+
+    <div class="bg-slate-800 p-10 rounded-xl shadow-2xl border border-blue-500/30 text-center max-w-md w-full">
+        <h1 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 mb-2">EdQuest</h1>
+        <p class="text-slate-400 mb-8">Level up your Class 10 scores.</p>
+        
+        <input type="text" id="usernameInput" value="Student123" class="w-full p-3 rounded bg-slate-700 border border-slate-600 focus:border-blue-500 outline-none mb-4" placeholder="Enter Username">
+        
+        <button onclick="login()" class="w-full bg-blue-600 hover:bg-blue-500 font-bold py-3 px-4 rounded transition-all shadow-[0_0_15px_rgba(37,99,235,0.5)]">
+            Start Journey
+        </button>
+    </div>
+
+    <script>
+        function login() {
+            const username = document.getElementById('usernameInput').value;
+            localStorage.setItem('currentUser', username); // Save session
+            window.location.href = 'arena.html'; // Move to the game
+        }
+    </script>
+</body>
+</html>
