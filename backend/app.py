@@ -2,6 +2,10 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 
+@app.route('/')
+def home():
+    return render_template('index.html')
+
 app = Flask(__name__)
 # Allow the frontend (HTML/JS) to communicate with this backend
 CORS(app)
