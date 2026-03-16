@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard | EdQuest</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-slate-900 text-white p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6">Learning Analytics</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-slate-800 p-6 rounded-xl border border-blue-500/50">
+                <p class="text-slate-400">Total Experience</p>
+                <h2 id="dashXP" class="text-4xl font-bold text-blue-400">0 XP</h2>
+            </div>
+            <div class="bg-slate-800 p-6 rounded-xl border border-emerald-500/50">
+                <p class="text-slate-400">Current Rank</p>
+                <h2 id="dashLevel" class="text-4xl font-bold text-emerald-400">Level 0</h2>
+            </div>
+        </div>
+
+        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+            <h3 class="text-xl mb-4">Subject Mastery</h3>
+            <canvas id="masteryChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // Simple Chart.js implementation
+        const ctx = document.getElementById('masteryChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Science', 'Math', 'History', 'English'],
+                datasets: [{
+                    label: 'Mastery %',
+                    data: [85, 40, 65, 90], // This would eventually come from your backend
+                    backgroundColor: '#3b82f6'
+                }]
+            },
+            options: {
+                scales: { y: { beginAtZero: true, max: 100 } },
+                plugins: { legend: { display: false } }
+            }
+        });
+    </script>
+</body>
+</html>
