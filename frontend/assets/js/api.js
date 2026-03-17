@@ -13,7 +13,9 @@ function resolveApiBase() {
         return `${protocol}//${hostname}:5000/api`;
     }
 
-    return `${origin}/api`;
+    // Production: Use Render backend
+    // Update this URL after deploying to Render: https://your-service.onrender.com
+    return 'https://edu-logic-league-backend.onrender.com/api';
 }
 
 const API_BASE = resolveApiBase();
