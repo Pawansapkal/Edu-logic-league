@@ -15,7 +15,15 @@ app = Flask(
     static_folder=str(FRONTEND_DIR / 'assets'),
     static_url_path='/assets',
 )
-CORS(app)
+# Configure CORS for production deployment
+cors_origins = [
+    "http://localhost:5000",
+    "http://localhost:3000",
+    "http://127.0.0.1:5000",
+    "https://pawansapkal.github.io",
+    "*"  # Allow all origins as fallback
+]
+CORS(app, origins=cors_origins, supports_credentials=True)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DATABASE_PATH}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -103,6 +111,12 @@ def get_or_create_user(username):
     db.session.add(user)
     db.session.commit()
     return user, True
+
+
+@app.get('/health')
+def health_check():
+    """Health check endpoint to prevent Render.com from sleeping"""
+    return jsonify({'status': 'ok'}), 200
 
 
 @app.get('/')

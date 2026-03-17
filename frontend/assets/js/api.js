@@ -19,16 +19,48 @@ function resolveApiBase() {
 
 const API_BASE = resolveApiBase();
 
+// Keep-alive mechanism to prevent Render backend from sleeping
+function startHealthCheck() {
+    setInterval(async () => {
+        try {
+            const response = await fetch(`${API_BASE.replace('/api', '')}/health`);
+            if (!response.ok) {
+                console.warn('Health check failed:', response.status);
+            }
+        } catch (error) {
+            // Silently fail - this is just to keep backend awake
+            console.debug('Health check error (expected):', error.message);
+        }
+    }, 4 * 60 * 1000); // Check every 4 minutes
+}
+
+// Start health check on page load
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', startHealthCheck);
+} else {
+    startHealthCheck();
+}
+
 async function requestJson(path, options = {}) {
-    const response = await fetch(`${API_BASE}${path}`, options);
-    const data = await response.json().catch(() => ({}));
+    try {
+        const response = await fetch(`${API_BASE}${path}`, options);
+        const data = await response.json().catch(() => ({}));
 
-    if (!response.ok) {
-        const message = data.error || 'Request failed.';
-        throw new Error(message);
+        if (!response.ok) {
+            const message = data.error || 'Request failed.';
+            throw new Error(message);
+        }
+
+        return data;
+    } catch (error) {
+        // Check if this is a network error (backend unreachable)
+        if (error instanceof TypeError || error.message.includes('Failed to fetch')) {
+            const errorMsg = `Backend unreachable: ${API_BASE}\nMake sure the backend is deployed and running on Render.com`;
+            console.error(errorMsg);
+            throw new Error('Login failed: Backend is not accessible. Make sure it\'s deployed on Render.com.');
+        }
+        throw error;
     }
-
-    return data;
 }
 
 async function createUser(username) {
