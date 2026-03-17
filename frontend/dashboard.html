@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | EdQuest</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -27,23 +28,44 @@
         </div>
     </div>
 
+    <script src="assets/js/api.js"></script>
     <script>
-        // Simple Chart.js implementation
-        const ctx = document.getElementById('masteryChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Science', 'Math', 'History', 'English'],
-                datasets: [{
-                    label: 'Mastery %',
-                    data: [85, 40, 65, 90], // This would eventually come from your backend
-                    backgroundColor: '#3b82f6'
-                }]
-            },
-            options: {
-                scales: { y: { beginAtZero: true, max: 100 } },
-                plugins: { legend: { display: false } }
+        const currentUser = localStorage.getItem('currentUser');
+        if (!currentUser) {
+            window.location.href = 'index.html';
+        }
+
+        let masteryChart;
+
+        async function initDashboard() {
+            const dashboard = await fetchDashboardData(currentUser);
+            document.getElementById('dashXP').innerText = `${dashboard.xp} XP`;
+            document.getElementById('dashLevel').innerText = `Level ${dashboard.level}`;
+
+            const ctx = document.getElementById('masteryChart').getContext('2d');
+            if (masteryChart) {
+                masteryChart.destroy();
             }
+
+            masteryChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: dashboard.mastery.map(item => item.subject),
+                    datasets: [{
+                        label: 'Mastery %',
+                        data: dashboard.mastery.map(item => item.score),
+                        backgroundColor: '#3b82f6'
+                    }]
+                },
+                options: {
+                    scales: { y: { beginAtZero: true, max: 100 } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        initDashboard().catch(error => {
+            console.error('Dashboard failed to load:', error);
         });
     </script>
 </body>

@@ -19,11 +19,17 @@
         </button>
     </div>
 
+    <script src="assets/js/api.js"></script>
     <script>
-        function login() {
-            const username = document.getElementById('usernameInput').value;
-            localStorage.setItem('currentUser', username); // Save session
-            window.location.href = 'arena.html'; // Move to the game
+        async function login() {
+            const username = document.getElementById('usernameInput').value.trim();
+            if (!username) {
+                return;
+            }
+
+            await createUser(username);
+            localStorage.setItem('currentUser', username);
+            window.location.href = 'arena.html';
         }
     </script>
 </body>
