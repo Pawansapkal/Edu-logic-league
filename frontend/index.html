@@ -24,12 +24,18 @@
         async function login() {
             const username = document.getElementById('usernameInput').value.trim();
             if (!username) {
+                alert('Please enter a username');
                 return;
             }
 
-            await createUser(username);
-            localStorage.setItem('currentUser', username);
-            window.location.href = 'arena.html';
+            try {
+                await createUser(username);
+                localStorage.setItem('currentUser', username);
+                window.location.href = 'arena.html';
+            } catch (error) {
+                console.error('Login failed:', error);
+                alert(`Login failed: ${error.message}\n\nMake sure the backend is deployed and accessible.`);
+            }
         }
     </script>
 </body>
